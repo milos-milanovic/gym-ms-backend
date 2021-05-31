@@ -7,6 +7,7 @@ import dev.milosmilanovic.gymms.data.repository.MemberRepository;
 import dev.milosmilanovic.gymms.model.Employee;
 import dev.milosmilanovic.gymms.model.GiftCode;
 import dev.milosmilanovic.gymms.model.Member;
+import dev.milosmilanovic.gymms.model.request.EmailRequest;
 import dev.milosmilanovic.gymms.model.response.CheckGiftCodeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,20 +72,18 @@ public class GiftCodeService {
         return res;
     }
 
-    public Map<String, String> generateGiftCode(String inputEmail) {
+    public Map<String, String> generateGiftCode(EmailRequest emailRequest) {
         String email = null; // trimmed email
 
-        if (inputEmail != null) {
-            email = inputEmail.trim();
+        if (emailRequest != null && emailRequest.getEmail() != null) {
+            email = emailRequest.getEmail().trim();
             if (!VALIDATE_EMAIL.test(email)) {
-                // ***** FOR TESTING ONLY *****
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail is not valid");
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sending an email in test environment is disabled. Leave the input field empty to generate a gift code.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail is not valid");
             }
         }
 
         // TODO: Example data until Spring Security is implemented and throw exc. if employee not valid...
-        // TEST Employee data - Employee who generated the gift code
+        // TEST -- Employee data - Employee who generated the gift code
         Optional<Employee> optionalEmployee = employeeRepository.findById(UUID.fromString("306fd134-533e-412d-ba5e-dde044658dbe"));
         Employee employee = optionalEmployee.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Employee not valid"));
 

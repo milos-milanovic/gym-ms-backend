@@ -2,6 +2,7 @@ package dev.milosmilanovic.gymms.data.service;
 
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,6 +22,9 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${mail.from}")
+    private String emailFrom;
+
     public void send(String to, String message) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -28,9 +32,8 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(message, true);
             helper.setTo(to);
-            helper.setSubject("You've received a gift code.");
-            // TODO: Replace hard coded value for email
-            helper.setFrom("milanovic32@hotmail.com", "Gym Management System - TEST");
+            helper.setSubject("You've received a gift code");
+            helper.setFrom(emailFrom, "Gym Management System - TEST");
 
             mailSender.send(mimeMessage);
         } catch (MessagingException | UnsupportedEncodingException e) {

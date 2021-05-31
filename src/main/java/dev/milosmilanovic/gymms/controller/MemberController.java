@@ -12,18 +12,19 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin("https://gymms.milosmilanovic.dev")
 public class MemberController {
 
     @Autowired
     private MemberService memberService;
 
 
-    @GetMapping("/api/members")
+    @GetMapping("members")
     public List<Member> getAllMembers() {
         return memberService.getAllMembers();
     }
 
-    @GetMapping("/api/members/{id}")
+    @GetMapping("members/{id}")
     public Member findById(@PathVariable("id") String inputId) {
         try {
             UUID id = UUID.fromString(inputId);
@@ -33,24 +34,24 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/api/members")
+    @PostMapping("members")
     public void insertMember(@RequestBody Member member) {
         member.setId(null);
         memberService.insertMember(member);
     }
 
-    @PutMapping("/api/members")
+    @PutMapping("members")
     public void updateMember(@RequestBody Member member) {
         memberService.updateMember(member);
     }
 
-    @GetMapping("/api/members/email/{email}")
+    @GetMapping("members/email/{email}")
     public MemberBasicInfoResponse findByEmail(@PathVariable("email") String emailInput) {
         return memberService.findByEmail(emailInput);
     }
 
     // Find member by: ID, Name, E-mail or Phone number
-    @GetMapping("/api/members/search")
+    @GetMapping("members/search")
     public List<MemberBasicInfoResponse> searchMember(@RequestParam("q") String searchInput) {
         return memberService.searchMember(searchInput);
     }
